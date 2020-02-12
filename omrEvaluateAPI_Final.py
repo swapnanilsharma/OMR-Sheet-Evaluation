@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request, flash
 from flask_cors import CORS
 from datetime import datetime, date
 import json
-import cv2
 import os
 from skimage.filters import threshold_local
 import numpy as np
@@ -13,9 +12,6 @@ from imutils.perspective import four_point_transform
 import warnings
 import math
 from imutils import contours
-from datetime import datetime
-from random import randint
-from base64 import decodestring, decodebytes
 import sys
 import names
 warnings.filterwarnings("ignore")
@@ -482,7 +478,7 @@ def omrevaluate():
                          "status": 'FAILED'})
     except:
         pars=[]
-    temp=randint(10000, 99999)
+    #temp=randint(10000, 99999)
     return jsonify({"result": {"status": "OK"},
                     "student": {"name": names.get_full_name(),
                               "class": "",
@@ -495,4 +491,4 @@ def omrevaluate():
                   })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8999, debug=True)
+    app.run(host='0.0.0.0', port=9999, debug=True)

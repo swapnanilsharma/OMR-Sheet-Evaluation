@@ -5,7 +5,7 @@ RUN apt-get install vim -y
 RUN apt-get install libhunspell-dev -y
 
 WORKDIR /app
-COPY . /app
+COPY omrEvaluateAPI_Final.py /app/omrEvaluateAPI.py
 
 RUN pip3 --no-cache-dir install -r requirements.txt
 
