@@ -320,11 +320,11 @@ def omrevaluate():
                               "schoolcode": "",
                               "rollno": ""},
                   "answers": [],
-                  "params": {"msgid": None,
-                             "resmsgid": None,
-                             "err": None,
-                             "err_msg": None,
-                             "err_detail": None,
+                  "params": {"msgid": "",
+                             "resmsgid": "",
+                             "err": "",
+                             "err_msg": "",
+                             "err_detail": "",
                              "status": 'rescan the image'},
                   "responseCode": 'FAILED'})
 
@@ -335,11 +335,11 @@ def omrevaluate():
     pars = []
     try:
         for i in error_index:
-            pars.append({"msgid": None,
-                         "resmsgid": None,
+            pars.append({"msgid": "",
+                         "resmsgid": "",
                          "err": str(i),
-                         "err_msg": 'Question no:'+str(i)+' is not proper',
-                         "err_detail": None,
+                         "err_msg": 'Question no:'+ str(i)+' is not proper',
+                         "err_detail": "",
                          "status": 'FAILED'})
     except:
         pars = []
