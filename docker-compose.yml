@@ -1,0 +1,11 @@
+ersion: '2'
+
+services:
+    flaskapp_swap:
+        build: .
+        ports: 
+            - "9999:9999"
+        image: omr_swap
+        container_name: omr_swap
+        environment:
+            - VIRTUAL_HOST=flaskapp_omr.swap.io
