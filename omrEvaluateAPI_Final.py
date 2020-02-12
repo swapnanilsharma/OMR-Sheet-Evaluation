@@ -141,7 +141,7 @@ def findMarkedCircles(warped_sub, b_no):
         cnts = contours.sort_contours(questionCnts[i:i + 4])[0]
         bubbled = None
         total = []
-        #yeyy = []
+        # yeyy = []
         # loop over the sorted contours
         for (j, c) in enumerate(cnts):
             # construct a mask that reveals only the current "bubble" for the question
@@ -150,9 +150,9 @@ def findMarkedCircles(warped_sub, b_no):
             # apply the mask to the thresholded image, then count the number of non-zero pixels in the bubble area
             mask = cv2.bitwise_and(warped_sub, warped_sub, mask=mask)
             total.append((cv2.countNonZero(mask), j))
-            #yeyy.append(cv2.moments(c)['m01'])  # 'm01'
+            # yeyy.append(cv2.moments(c)['m01'])  # 'm01'
         norm_list1 = [float(i)/sum([i[0] for i in total]) for i in [i[0] for i in total]]
-        #norm_list = [float(i)/sum(yeyy) for i in yeyy]
+        # norm_list = [float(i)/sum(yeyy) for i in yeyy]
         print(f'{q+1}-------{[i[0] for i in total]}----{norm_list1}')
         sort_norm_list1 = sorted(norm_list1)
 
@@ -238,7 +238,7 @@ def findRollNumber(contourList, grayImage):
         cnts = contours.sort_contours(questionCnts[i:i + 10])[0]
         bubbled = None
         total = []
-        #yeyy = []
+        # yeyy = []
         # loop over the sorted contours
         for (j, c) in enumerate(cnts):
             mask = np.zeros(warped.shape, dtype="uint8")
@@ -246,10 +246,10 @@ def findRollNumber(contourList, grayImage):
             # apply the mask to the thresholded image, then count the number of non-zero pixels in the bubble area
             mask = cv2.bitwise_and(warped, warped, mask=mask)
             total.append((cv2.countNonZero(mask), j))
-            #yeyy.append(cv2.moments(c)['m01'])
+            # yeyy.append(cv2.moments(c)['m01'])
 
         norm_list1 = [float(i)/sum([i[0] for i in total]) for i in [i[0] for i in total]]
-        #norm_list = [float(i)/sum(yeyy) for i in yeyy]
+        # norm_list = [float(i)/sum(yeyy) for i in yeyy]
         print(f'Roll Number {q}: {[i[0] for i in total]}-----------{norm_list1}', file=sys.stderr)
         if min(norm_list1) <= 0.085:
             bubbled = total[norm_list1.index(min(norm_list1))]
@@ -308,7 +308,10 @@ def omrevaluate():
 
     blockNumber = 1
     try:
-        resp, res_string, res, error_index, roll_no = processOMR(imagePath=imagePath, blockNumber=blockNumber, answerKey=answerKey, noOfQuestions=int(noOfQuestions))
+        resp, res_string, res, error_index, roll_no = processOMR(imagePath=imagePath,
+                                                                 blockNumber=blockNumber,
+                                                                 answerKey=answerKey,
+                                                                 noOfQuestions=int(noOfQuestions))
 
     except:
         return jsonify({"result": {"status": "FAILED"},
