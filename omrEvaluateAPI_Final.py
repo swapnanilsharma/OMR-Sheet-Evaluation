@@ -107,7 +107,7 @@ def findContoursFromQASection(matrix, b_no):
            min(x_cor_for_nth_circle) >= math.ceil(b_no*max(x_cor_for_max_circle)/5):
             # apply the four point transform to obtain a top-down view of the original image
             warped = four_point_transform(image=matrix, pts=contr.reshape(4, 2))
-            warped = warped[:, int(0.235*warped.shape[1]):]
+            warped = warped[:, int(0.215*warped.shape[1]):]
         else:
             pass
     return warped
@@ -158,6 +158,8 @@ def findMarkedCircles(warped_sub, b_no):
 
         if sort_norm_list1[0] <= 0.20:
             if sort_norm_list1[1] <= 0.20:
+                bubbled = (None, -1)
+            elif sort_norm_list1[-1] >= 0.40:
                 bubbled = (None, -1)
             else:
                 bubbled = total[norm_list1.index(min(norm_list1))]
