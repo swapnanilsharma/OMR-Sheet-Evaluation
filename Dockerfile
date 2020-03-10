@@ -1,4 +1,5 @@
 from python:3.6.9
+MAINTAINER "swapnanil.sharmah@pwc.com"
 
 RUN apt-get update
 RUN apt-get install vim -y
@@ -12,4 +13,4 @@ RUN pip3 --no-cache-dir install -r requirements.txt
 EXPOSE 8999
 
 ENTRYPOINT ["python3"]
-CMD ["omrEvaluateAPI_Final.py"]
+CMD ["app.py"]

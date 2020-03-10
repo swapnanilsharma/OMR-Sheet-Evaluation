@@ -6,6 +6,7 @@ services:
         ports: 
             - "8999:8999"
         image: omr_swap
+        mem_limit: 2048m
         container_name: omr_swap
         environment:
             - VIRTUAL_HOST=flaskapp_omr.swap.io
