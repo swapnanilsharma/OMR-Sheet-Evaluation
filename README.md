@@ -3,8 +3,8 @@
 ## Steps to run the service
 
 ```
-$ git clone https://gitlab-able.ddns.net/omr/omr-image-processing.git
-$ cd omr-image-processing
+$ git clone https://github.com/swapnanilsharma/OMR-Sheet-Evaluation.git
+$ cd OMR-Sheet-Evaluation
 $ docker-compose up -d
 ```
 
