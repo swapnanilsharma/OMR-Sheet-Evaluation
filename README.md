@@ -1,4 +1,4 @@
-# omr-image-processing
+# OMR-Sheet-Evaluation
 
 ## Steps to run the service
 
