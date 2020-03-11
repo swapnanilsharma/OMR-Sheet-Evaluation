@@ -8,7 +8,9 @@ import warnings
 from .cornerFeatures import cornerFeatures
 from .omrServiceTemplate1 import omrServiceTemplate1
 from .responseJson import *
-from .commonConstants import *
+from .commonConstants import NO_OF_QUESTIONS, ANSWER_KEY, TEMPLATE_ID
+from .commonConstants import IMAGE_FILE, MAX_QUES_TEMP1, FALSE, EMPTY
+from .commonConstants import QUES_NO_NOT_PROP_ERR_MSG, FAILED, OK, RESCAN_ERR_MSG
 
 warnings.filterwarnings("ignore")
 
@@ -45,6 +47,8 @@ class omrImageProcessing(Resource):
                                   section=EMPTY, schoolcode=EMPTY,
                                   rollno=EMPTY)
             answers = answersJson([])
+            if os.path.exists(imagePath):
+                os.remove(imagePath)
             return json.loads(finalRespJson(result=FAILED, params=params,
                                             responseCode=FAILED,
                                             student=student,
