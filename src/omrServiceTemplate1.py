@@ -8,10 +8,12 @@ import math
 from imutils import contours
 import sys
 import names
-warnings.filterwarnings("ignore")
 
 from .cornerFeatures import cornerFeatures
 from .commonConstants import *
+
+warnings.filterwarnings("ignore")
+
 
 class omrServiceTemplate1:
 

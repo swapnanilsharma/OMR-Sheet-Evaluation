@@ -1,8 +1,8 @@
-flask
-flask_cors
-flask_restful
-scikit-image
-numpy
-opencv-python
-imutils
-names
+flask==1.1.1
+flask_cors==3.0.8
+flask_restful==0.3.6
+scikit-image=0.14.2
+numpy=1.18.1
+opencv-python=4.2.0.32
+imutils=0.5.3
+names=0.3.0
