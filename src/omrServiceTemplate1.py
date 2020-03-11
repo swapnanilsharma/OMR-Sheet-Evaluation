@@ -11,6 +11,7 @@ import names
 warnings.filterwarnings("ignore")
 
 from .cornerFeatures import cornerFeatures
+from .commonConstants import *
 
 class omrServiceTemplate1:
 
@@ -21,11 +22,12 @@ class omrServiceTemplate1:
         orig = image.copy()
         # convert the image to grayscale, blur it, and find edges in the image
         gray = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(src=gray, ksize=(3, 3), sigmaX=10, sigmaY=10)
+        gray = cv2.GaussianBlur(src=gray, ksize=KSIZE_GAUBLUR, sigmaX=SIGMAX_GAUBLUR, sigmaY=SIGMAY_GAUBLUR)
         return gray
     
     def cannyFilter(self, grayImage):
-        return cv2.Canny(image=grayImage, threshold1=75, threshold2=200, L2gradient=True, apertureSize=7)
+        return cv2.Canny(image=grayImage, threshold1=THRESHOLD1_CANNY, threshold2=THRESHOLD2_CANNY,
+                         L2gradient=True, apertureSize=APERTURESIZE_CANNY)
     
     def getDistinctContours(self, imageMatrix, maxContours=2):
         cnts = cv2.findContours(image=imageMatrix.copy(), mode=cv2.RETR_LIST, method=cv2.CHAIN_APPROX_SIMPLE)
@@ -106,7 +108,7 @@ class omrServiceTemplate1:
     
             # in order to label the contour as a question, region should be sufficiently wide, sufficiently tall, and
             # have an aspect ratio approximately equal to 1
-            if 30 >= w >= 10 and 30 >= h >= 10 and ar >= 0.70 and ar <= 1.30:
+            if MAX_WIDTH >= w >= MIN_WIDTH and MAX_HEIGHT >= h >= MIN_HEIGHT and ar >= MIN_ASP_RATIO_CONTR and ar <= MAX_ASP_RATIO_CONTR:
                 questionCnts.append(c)
     
         print(f'------>>>>>Total valid question contours:{len(questionCnts)}')
@@ -117,7 +119,7 @@ class omrServiceTemplate1:
         for (q, i) in enumerate(np.arange(0, len(questionCnts), 4)):
             # sort the contours or the current question from left to right, then initialize the index of the bubbled answer
             cnts = contours.sort_contours(questionCnts[i:i + 4])[0]
-            bubbled = None
+            bubbled = NONE
             total = []
             # loop over the sorted contours
             for (j, c) in enumerate(cnts):
@@ -131,17 +133,17 @@ class omrServiceTemplate1:
             print(f'{q+1}-------{[i[0] for i in total]}----{norm_list1}')
             sort_norm_list1 = sorted(norm_list1)
     
-            if sort_norm_list1[0] <= 0.20:
-                if sort_norm_list1[1] <= 0.20:
-                    bubbled = (None, -1)
-                elif sort_norm_list1[-1] >= 0.40:
-                    bubbled = (None, -1)
+            if sort_norm_list1[0] <= THRS_2_MARKED_AMONG_4:
+                if sort_norm_list1[1] <= THRS_2_MARKED_AMONG_4:
+                    bubbled = (NONE, -1)
+                elif sort_norm_list1[-1] >= THRS_3_MARKED_AMONG_4:
+                    bubbled = (NONE, -1)
                 else:
                     bubbled = total[norm_list1.index(min(norm_list1))]
             else:
-                bubbled = (None, None)
+                bubbled = (NONE, NONE)
     
-            if bubbled[1] is None:
+            if bubbled[1] is NONE:
                 resp = ""
             elif bubbled[1] == 0:
                 resp = "A"
@@ -154,7 +156,7 @@ class omrServiceTemplate1:
             elif bubbled[1] == -1:
                 resp = "Z"
     
-            response_key.append({"questionno": str(b_no*30+q+1), "answer": resp})
+            response_key.append({"questionno": str(b_no*NO_OF_QUES_PER_BLOCK+q+1), "answer": resp})
         return response_key
     
     def concatenate_list_data(self, list):
@@ -211,15 +213,15 @@ class omrServiceTemplate1:
             ar = w / float(h)
             # in order to label the contour as a question, region should be sufficiently wide, sufficiently tall, and
             # have an aspect ratio approximately equal to 1
-            if 30 >= w >= 10 and 30 >= h >= 10 and ar >= 0.70 and ar <= 1.30:
+            if MAX_WIDTH >= w >= MIN_WIDTH and MAX_HEIGHT >= h >= MIN_HEIGHT and ar >= MIN_ASP_RATIO_CONTR and ar <= MAX_ASP_RATIO_CONTR:
                 questionCnts.append(c)
         print(f'Total relevance contours in the Block: {len(questionCnts)}', file=sys.stderr)
-        questionCnts = contours.sort_contours(questionCnts[:totalRowColumn], method="top-to-bottom")[0]
+        questionCnts = contours.sort_contours(questionCnts[:totalRowColumn], method=TOP_TO_BOTTOM)[0]
         response_key = []
     
         for (q, i) in enumerate(np.arange(0, len(questionCnts), 10)):
             cnts = contours.sort_contours(questionCnts[i:i + 10])[0]
-            bubbled = None
+            bubbled = NONE
             total = []
             # loop over the sorted contours
             for (j, c) in enumerate(cnts):
@@ -231,20 +233,19 @@ class omrServiceTemplate1:
     
             norm_list1 = [float(i)/sum([i[0] for i in total]) for i in [i[0] for i in total]]
             print(f'Block {q}: {[i[0] for i in total]}-----------{norm_list1}', file=sys.stderr)
-            if min(norm_list1) <= 0.085:
+            if min(norm_list1) <= THRS_1_MARKED_AMONG_10:
                 bubbled = total[norm_list1.index(min(norm_list1))]
                 response_key.append({str(q): (9 - bubbled[1])})
             else:
-                bubbled = (None, -1)
+                bubbled = (NONE, -1)
     
         if -1 in [list(i.values())[0] for i in response_key]:
-            return 'error in parsing the block', 500
+            return BLOCK_PARSING_ERR_MSG, 500
         else:
             return self.concatenate_list_data([list(i.values())[0] for i in response_key])
     
-    #@property
-    def processOMR(self, imagePath, answerKey=True, noOfQuestions=150):
-        if answerKey == 'True':
+    def processOMR(self, imagePath, answerKey=True, noOfQuestions=MAX_QUES_TEMP1):
+        if answerKey == TRUE:
             gray = self.getGrayImage(imagePath=imagePath)
             warped = self.getQASectionFromImage(grayImage=gray)
             finalList = []
@@ -254,16 +255,16 @@ class omrServiceTemplate1:
             finalList = finalList[0:noOfQuestions]
             error_index = []
             for i in range(int(noOfQuestions)):
-                if list(finalList[i].values())[0] == "":
+                if list(finalList[i].values())[0] == EMPTY:
                     error_index.append(i+1)
             for i in range(int(noOfQuestions)):
                 if len(error_index) != 0:
-                    return None, "FAILED", error_index
-            if len([i['answer'] for i in finalList if i['answer'] == '']) == 0:
-                return finalList, "OK", None
+                    return NONE, FAILED, error_index
+            if len([i['answer'] for i in finalList if i['answer'] == EMPTY]) == 0:
+                return finalList, OK, NONE
             else:
-                return None, "FAILED", error_index
-        elif answerKey == 'False':
+                return NONE, FAILED, error_index
+        elif answerKey == FALSE:
             gray = self.getGrayImage(imagePath=imagePath)
             warped = self.getQASectionFromImage(grayImage=gray)
             finalList = []
@@ -272,9 +273,8 @@ class omrServiceTemplate1:
                 finalList = finalList + self.findMarkedCircles(warped=warped, contr=contr, b_no=b_no)
             finalList = finalList[0:noOfQuestions]
             print(f'Answer List:-----------{finalList}', file=sys.stderr)
-            return finalList, "OK", None
+            return finalList, OK, NONE
     
-    #@property
     def otherDetailsOfStudent(self, imagePath):
         gray = self.getGrayImage(imagePath=imagePath)
         rollNumber = self.findRollNumber(grayImage=gray)

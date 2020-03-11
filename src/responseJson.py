@@ -11,6 +11,7 @@ class finalRespJson(responseJson):
         self.params = params.getJson()
         self.responseCode = responseCodeJson(responseCode).getJson()
 
+    @property
     def getJson(self):
         return json.dumps(self.__dict__)
 
